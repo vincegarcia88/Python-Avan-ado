@@ -12,3 +12,208 @@ ragnar = Viking('Ragnar', 'Machado', 'Pele de Urso')
 
 merlin.grito()
 ragnar.grito()
+
+___________________________
+
+"""Crie um sistema para gerir uma biblioteca virtual.
+
+A interface deverá permitir registrar, pesquisar, vender e emprestar tanto Livros
+quanto E-books. Ambos os tipos de livros partilham características gerais, mas não específicas.
+
+Os livros deverão estar armazenados numa base de dados em SQLITE3."""
+
+import sqlite3
+from datetime import datetime
+
+def criar_banco_dados():
+    conn = sqlite3.connect('biblioteca_virtual.db')
+    cursor = conn.cursor()
+
+def menu():
+    while True:
+        print("\n=== Biblioteca Virtual ===")
+        print("1. Registrar Livro")
+        print("2. Registrar E-book")
+        print("3. Emprestar Livro")
+        print("4. Vender Livro")
+        print("5. Pesquisar Livro")
+        print("6. Listar Livros")
+        print("7. Sair")
+        
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == '1':
+            titulo = input("Título: ")
+            autor = input("Autor: ")
+            categoria = input("Categoria: ")
+            ano_publicacao = int(input("Ano de Publicação: "))
+            tipo = 'livro físico'
+            preco = float(input("Preço: "))
+            registrar_livro(titulo, autor, categoria, ano_publicacao, tipo, preco)
+        elif opcao == '2':
+            titulo = input("Título: ")
+            autor = input("Autor: ")
+            categoria = input("Categoria: ")
+            ano_publicacao = int(input("Ano de Publicação: "))
+            tipo = 'e-book'
+            preco = float(input("Preço: "))
+            formato = input("Formato (PDF, EPUB, MOBI, etc.): ")
+            tamanho_arquivo = float(input("Tamanho do arquivo (MB): "))
+            link_download = input("Link de Download: ")
+            registrar_livro(titulo, autor, categoria, ano_publicacao, tipo, preco, formato, tamanho_arquivo, link_download)
+        elif opcao == '3':
+            livro_id = int(input("ID do Livro: "))
+            usuario = input("Nome do Usuário: ")
+            registrar_emprestimo(livro_id, usuario)
+        elif opcao == '4':
+            livro_id = int(input("ID do Livro: "))
+            comprador = input("Nome do Comprador: ")
+            preco_pago = float(input("Preço Pago: "))
+            registrar_venda(livro_id, comprador, preco_pago)
+        elif opcao == '5':
+            titulo = input("Título do livro: ")
+            livros = pesquisar_livro(titulo)
+            for livro in livros:
+                print(livro)
+        elif opcao == '6':
+            livros = listar_livros()
+            for livro in livros:
+                print(livro)
+        elif opcao == '7':
+            break
+        else:
+            print("Opção inválida! Tente novamente.")
+
+    # Criando a tabela Livros
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Livros (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        titulo TEXT,
+        autor TEXT,
+        categoria TEXT,
+        ano_publicacao INTEGER,
+        tipo TEXT CHECK(tipo IN ('livro físico', 'e-book')),
+        preco REAL
+    )''')
+
+    # Criando a tabela Ebooks
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Ebooks (
+        id INTEGER PRIMARY KEY,
+        formato TEXT,
+        tamanho_arquivo REAL,
+        link_download TEXT,
+        FOREIGN KEY(id) REFERENCES Livros(id)
+    )''')
+
+    # Criando a tabela Emprestimos
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Emprestimos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        livro_id INTEGER,
+        usuario TEXT,
+        data_emprestimo TEXT,
+        data_devolucao TEXT,
+        FOREIGN KEY(livro_id) REFERENCES Livros(id)
+    )''')
+
+    # Criando a tabela Vendas
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Vendas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        livro_id INTEGER,
+        comprador TEXT,
+        data_venda TEXT,
+        preco_pago REAL,
+        FOREIGN KEY(livro_id) REFERENCES Livros(id)
+    )''')
+
+    conn.commit()
+    conn.close()
+
+criar_banco_dados()
+
+
+# Função para registrar livros
+def registrar_livro(titulo, autor, categoria, ano_publicacao, tipo, preco, formato=None, tamanho_arquivo=None, link_download=None):
+    conn = sqlite3.connect('biblioteca_virtual.db')
+    cursor = conn.cursor()
+
+    # Inserindo livro na tabela Livros
+    cursor.execute('''
+    INSERT INTO Livros (titulo, autor, categoria, ano_publicacao, tipo, preco)
+    VALUES (?, ?, ?, ?, ?, ?)
+    ''', (titulo, autor, categoria, ano_publicacao, tipo, preco))
+    
+    livro_id = cursor.lastrowid
+
+    # Se for um e-book, registra as informações específicas
+    if tipo == 'e-book':
+        cursor.execute('''
+        INSERT INTO Ebooks (id, formato, tamanho_arquivo, link_download)
+        VALUES (?, ?, ?, ?)
+        ''', (livro_id, formato, tamanho_arquivo, link_download))
+    
+    conn.commit()
+    conn.close()
+
+# Função para registrar empréstimo
+def registrar_emprestimo(livro_id, usuario):
+    data_emprestimo = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    conn = sqlite3.connect('biblioteca_virtual.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+    INSERT INTO Emprestimos (livro_id, usuario, data_emprestimo)
+    VALUES (?, ?, ?)
+    ''', (livro_id, usuario, data_emprestimo))
+    
+    conn.commit()
+    conn.close()
+
+# Função para registrar venda
+def registrar_venda(livro_id, comprador, preco_pago):
+    data_venda = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    conn = sqlite3.connect('biblioteca_virtual.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+    INSERT INTO Vendas (livro_id, comprador, data_venda, preco_pago)
+    VALUES (?, ?, ?, ?)
+    ''', (livro_id, comprador, data_venda, preco_pago))
+    
+    conn.commit()
+    conn.close()
+
+# Função para pesquisar livros por título
+def pesquisar_livro(titulo):
+    conn = sqlite3.connect('biblioteca_virtual.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+    SELECT * FROM Livros WHERE titulo LIKE ?
+    ''', ('%' + titulo + '%',))
+    
+    livros = cursor.fetchall()
+    conn.close()
+
+    return livros
+
+# Função para listar todos os livros disponíveis
+def listar_livros():
+    conn = sqlite3.connect('biblioteca_virtual.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+    SELECT * FROM Livros
+    ''')
+    
+    livros = cursor.fetchall()
+    conn.close()
+
+    return livros
+
+# Chama o menu principal
+menu()
+
+
