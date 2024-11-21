@@ -1,0 +1,14 @@
+class Personagem:
+    def __init__(self, nome):
+        self.nome = nome
+        self.experiencia = 0
+        self.nivel = 1
+        self.vida = 100
+
+
+    def __str__(self):
+        return f'Nome: {self.nome} | XP: {self.experiencia}\nNivel: {self.nivel} | HP: {self.vida}'
+
+
+personagem = Personagem('Jorge')
+print(personagem)
