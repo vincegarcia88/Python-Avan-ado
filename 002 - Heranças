@@ -1,0 +1,14 @@
+class Viking(Personagem):
+    def __init__(self, nome, arma, armadura):
+        super().__init__(nome, arma, armadura)
+        self.__dureza = 10
+
+    def grito(self):
+        print('Skôl')
+
+
+merlin = Feiticeiro('Merlin', 'Varinha', 'Robe', 'Avada Kedavra')
+ragnar = Viking('Ragnar', 'Machado', 'Pele de Urso')
+
+merlin.grito()
+ragnar.grito()
