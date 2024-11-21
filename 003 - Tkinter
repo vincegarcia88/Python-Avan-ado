@@ -1,0 +1,118 @@
+Pular para o conteúdo principal
+Google Sala de Aula
+Google Sala de Aula
+[ Manhã ] - Python Avançado
+Início
+Agenda
+Cursos
+Para corrigir
+E
+English planos de aula
+E
+English
+C
+Curso de Francês básico
+Minhas inscrições
+Pendentes
+[
+[ Manhã ] - Python Avançado
+[
+[ Manhã ] - Programação em Python
+Turmas arquivadas
+Configurações
+Mural
+Atividades
+Pessoas
+Todos os temas
+Concluída Atividade
+Escolha do projeto Final
+Sem data de entrega
+DJANGO
+DJANGO
+Material
+Libertar Política
+Item postado: 09:40
+Utilitários
+Utilitários
+Material
+ChatGPT - < Kikai Code >
+Item postado: 7 de nov.
+Projetos
+Projetos
+Concluída Atividade
+Projeto Grupo 002 - Projeto Hashing
+Sem data de entrega
+Concluída Atividade
+Projeto Grupo 001 - Gerador de Passwords Seguras
+Sem data de entrega
+Exercícios Formandos
+Exercícios Formandos
+Concluída Atividade
+Exercício 002
+Sem data de entrega
+Concluída Atividade
+Exercício 001
+Sem data de entrega
+Correção dos Exercícios
+Correção dos Exercícios
+Material
+Ex002
+Item postado: Ontem
+Material
+Ex001
+Item postado: 7 de nov.
+Manual, Exercícios e Códigos de Aula
+Manual, Exercícios e Códigos de Aula
+Material
+Aula 4 - Hash de Passwords
+Item postado: 18 de nov.
+Material
+Aula #3 - Tkinter
+Item postado: 13 de nov.
+
+#3 - 10794 - Programação avançada com Python.pdf
+PDF
+
+3-tkinter.py
+Texto
+Material
+Aula #2 - Heranças
+Última edição: 13 de nov.
+Material
+Aula #1 - Representação Visual de Objetos
+Última edição: 13 de nov.
+Atividades de [ Manhã ] - Python Avançado
+﻿from tkinter import *
+from tkinter import ttk
+    
+def janela_login():
+    global janela
+    janela_login = Tk()
+    janela_login.geometry('300x300')
+    janela_login.title('Login')
+    btn = ttk.Button(janela_login, text='fechar', command=janela.destroy)
+    btn.grid(column=0, row=0)
+
+
+janela = Tk()
+
+janela.geometry('600x400')
+janela.title('Olá pessoas')
+
+nome_lbl = ttk.Label(janela, text='Nome: ', background='midnightblue')
+nome_lbl.grid(column=0, row=0, columnspan=1)
+
+idade_lbl = ttk.Label(janela, text='Idade: ', background='purple')
+idade_lbl.grid(row=0, column=1)
+
+nome_btn = ttk.Button(janela, text='nome', command=janela.destroy)
+nome_btn.grid(column=0, row=1)
+
+login_btn = ttk.Button(janela, text='login', command=janela_login)
+login_btn.grid(column=1, row=1)
+
+
+janela.mainloop()
+print('programa terminado')
+3-tkinter.py
+Exibindo 3-tkinter.py…
